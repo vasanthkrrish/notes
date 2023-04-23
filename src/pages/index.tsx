@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import { Topic } from "@prisma/client";
+import NoteEditor from "./components/NoteTaker";
+import NoteCard from "./components/NoteCard";
 
 const Content: React.FC = () => {
   const { data: sessionData } = useSession();
@@ -22,6 +24,27 @@ const Content: React.FC = () => {
   const createTopic = api.topics.create.useMutation({
     onSuccess: () => {
       refetchTopics();
+    },
+  });
+
+  const { data: notes, refetch: refetchNotes } = api.notes.getAll.useQuery(
+    {
+      topicId: selectedTopic?.id ?? "",
+    },
+    {
+      enabled: sessionData?.user !== undefined && selectedTopic !== null,
+    }
+  );
+
+  const createNote = api.notes.create.useMutation({
+    onSuccess: () => {
+      refetchNotes();
+    },
+  });
+
+  const deleteNote = api.notes.delete.useMutation({
+    onSuccess: () => {
+      refetchNotes();
     },
   });
 
@@ -57,7 +80,22 @@ const Content: React.FC = () => {
           }}
         />
       </div>
-      <div className="col-span-3"></div>
+      <div className="col-span-3">
+        {notes?.map((note) => (
+          <div key={note.id} className="mt-5">
+            <NoteCard note={note} onDelete={() => void deleteNote.mutate({id: note.id})} />
+          </div>
+        ))}
+        <NoteEditor
+          onSave={({ title, content }) => {
+            createNote.mutate({
+              title,
+              content,
+              topicId: selectedTopic?.id ?? "",
+            });
+          }}
+        />
+      </div>
     </div>
   );
 };
