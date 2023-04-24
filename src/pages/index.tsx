@@ -23,7 +23,7 @@ const Content: React.FC = () => {
 
   const createTopic = api.topics.create.useMutation({
     onSuccess: () => {
-      refetchTopics();
+      void refetchTopics();
     },
   });
 
@@ -38,13 +38,13 @@ const Content: React.FC = () => {
 
   const createNote = api.notes.create.useMutation({
     onSuccess: () => {
-      refetchNotes();
+      void refetchNotes();
     },
   });
 
   const deleteNote = api.notes.delete.useMutation({
     onSuccess: () => {
-      refetchNotes();
+      void refetchNotes();
     },
   });
 

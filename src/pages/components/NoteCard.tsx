@@ -14,10 +14,10 @@ const NoteCard = ({ note, onDelete }: { note: Note; onDelete: () => void }) => {
           } collapse`}
           onClick={() => setIsExpanded(!isExpanded)}
         >
-          <div className="text.xl collapse-title font-bold">{note.title}</div>
+          <div className="text.xl collapse-title font-bold">{note?.title}</div>
           <div className="collapse-content">
             <article className="prose lg:prose-xl">
-              <ReactMarkdown>{note.content}</ReactMarkdown>
+              <ReactMarkdown>{note?.content}</ReactMarkdown>
             </article>
           </div>
         </div>
